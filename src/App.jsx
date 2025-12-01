@@ -89,6 +89,7 @@ function App() {
           </Route>
 
           {/* not found page */}
+           <Route path="/" element={<Shoppinghome/>}></Route>
           <Route path="*" element={<Notfound />}></Route>
           <Route path="/unauth-page" element={<Unauth />} />
         </Routes>
