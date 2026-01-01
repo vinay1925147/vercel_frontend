@@ -38,9 +38,9 @@ function Adminproduct() {
   const [uploadedImageUrls, setUploadedImageUrls] = useState("");
   const [imageLoading, setImageLoading] = useState(false);
   const [currentEditedId, setCurrentEditedId] = useState(null);
-
   const { productList } = useSelector((state) => state.adminProduct);
   const dispatch = useDispatch();
+  
   const onSubmit = async (e) => {
     e.preventDefault();
     currentEditedId !== null
@@ -50,8 +50,6 @@ function Adminproduct() {
             formData,
           })
         ).then((data) => {
-          console.log(data, "edit");
-
           if (data?.payload?.success) {
             dispatch(getAllProduct());
             setFormData(initialFormData);
@@ -94,22 +92,22 @@ function Adminproduct() {
   }
   return (
     <>
-      <div className="mb-5 flex justify-end ">
+      <div className="mb-5 flex justify-end">
         <Button
-          className="cursor-pointer "
+          className="cursor-pointer"
           onClick={() => setOpenCreatedProduct(true)}
         >
           Add New Products
         </Button>
       </div>
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 mt-15 ">
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 mt-10 ">
         {productList.map((productItem) => (
           <AdminProductTile
             setFormData={setFormData}
             setOpenCreatedProduct={setOpenCreatedProduct}
             setCurrentEditedId={setCurrentEditedId}
-            product={productItem}
             handleDelete={handleDelete}
+            product={productItem}
           />
         ))}
       </div>
@@ -119,6 +117,7 @@ function Adminproduct() {
           setOpenCreatedProduct(false);
           setCurrentEditedId(null);
           setFormData(initialFormData);
+          setImageFiles(null);
         }}
       >
         <SheetContent
@@ -133,7 +132,6 @@ function Adminproduct() {
 
           {/*image container*/}
           <ProductImageUploads
-            className=""
             imageFiles={imageFiles}
             setImageFiles={setImageFiles}
             uploadedImageUrls={uploadedImageUrls}
@@ -148,7 +146,7 @@ function Adminproduct() {
               onSubmit={onSubmit}
               formData={formData}
               setFormData={setFormData}
-              buttonText={currentEditedId !== null ? "Edit" : "Add"}
+              buttonText={currentEditedId !== null ? "Edit": "Add"}
               formControls={addProductFormElements}
               isBtnDisabled={!isFormValid()}
             />

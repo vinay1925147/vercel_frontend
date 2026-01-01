@@ -2,10 +2,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import axios from "axios";
-import { FileIcon, SkipBack, Skull, UploadCloudIcon, XIcon } from "lucide-react";
+import { FileIcon, SkipBack, UploadCloudIcon, XIcon } from "lucide-react";
 import { useEffect, useRef } from "react";
-import { FaStickerMule } from "react-icons/fa";
-
 
 function ProductImageUploads({
   imageFiles,
@@ -14,7 +12,7 @@ function ProductImageUploads({
   setImageFiles,
   setUploadedImageUrls,
   setImageLoading,
-  isEditmode
+  isEditmode,
 }) {
   const inputRef = useRef(null);
   const handleImageChange = (e) => {
@@ -41,29 +39,34 @@ function ProductImageUploads({
       inputRef.current.value = "";
     }
   };
-  const uploadImageToCloudinary = async ()=>{
-    setImageLoading(true)
+  const uploadImageToCloudinary = async () => {
+    setImageLoading(true);
     const formData = new FormData();
-    formData.append("file-name",imageFiles);
-    const response = await axios.post("http://localhost:8000/api/admin/product/upload-image",formData)
-    console.log(response)
-    if(response.data.success){
-      setUploadedImageUrls(response.data.result.url)
-      setImageLoading(false)
+    formData.append("file-name", imageFiles);
+    const response = await axios.post(
+      "${import.meta.env.VITE_API_URL}/api/admin/product/upload-image",
+      formData
+    );
+    console.log(response);
+    if (response.data.success) {
+      setUploadedImageUrls(response.data.result.url);
+      setImageLoading(false);
     }
-  }
-  useEffect(() =>{
-    if(imageFiles !==null){
-      uploadImageToCloudinary()
+  };
+  useEffect(() => {
+    if (imageFiles !== null) {
+      uploadImageToCloudinary();
     }
-  },[imageFiles])
+  }, [imageFiles]);
   return (
     <div className="w-full max-w-md mx-auto">
       <Label className="text-lg font-semibold mb-2 block">Uploads image</Label>
       <div
         onDragOver={handleDragOver}
         onDrop={handleDrop}
-        className={` ${isEditmode ? " opacity-95 " : "" }border-2 border-dashed rounded-lg p-4`}
+        className={` ${
+          isEditmode ? " opacity-95 " : ""
+        }border-2 border-dashed rounded-lg p-4`}
       >
         <Input
           className="hidden"
@@ -77,29 +80,36 @@ function ProductImageUploads({
         {!imageFiles ? (
           <Label
             htmlFor="image-upload"
-            className={`${isEditmode ? "": ""}cursor-pointer flex flex-col items-center justify-center border-2 border-dashed border-gray-400 rounded-md p-10 text-center hover:bg-gray-50 `}
+            className={`${
+              isEditmode ? "" : ""
+            }cursor-pointer flex flex-col items-center justify-center border-2 border-dashed border-gray-400 rounded-md p-10 text-center hover:bg-gray-50 `}
           >
             <UploadCloudIcon className="w-10 h-10 text-muted-foreground m-2" />
-            <span className="font-bold text-gray-700">Drag and Drop & upload image</span>
+            <span className="font-bold text-gray-700">
+              Drag and Drop & upload image
+            </span>
           </Label>
+        ) : imageLoading ? (
+          <SkipBack />
         ) : (
-          imageLoading ? <SkipBack/> : <> <h1></h1>
-       
-          <div className="flex items-center justify-between">
-            <div className="flex items-center">
-              <FileIcon className="text-primary mr-4 w-8 h-8" />
+          <>
+            {" "}
+            <h1></h1>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center">
+                <FileIcon className="text-primary mr-4 w-8 h-8" />
+              </div>
+              <p className="text-sm font-medium ">{imageFiles.name} </p>
+              <Button
+                varient="ghost"
+                size="icon"
+                className=""
+                onClick={handleRemoveImage}
+              >
+                <XIcon className="w-3 h-4" />
+                <span className="sr-only">Reamove file</span>
+              </Button>
             </div>
-            <p className="text-sm font-medium ">{imageFiles.name} </p>
-            <Button
-              varient="ghost"
-              size="icon"
-              className=""
-              onClick={handleRemoveImage}
-            >
-              <XIcon className="w-3 h-4" />
-              <span className="sr-only">Reamove file</span>
-            </Button>
-          </div>
           </>
         )}
       </div>

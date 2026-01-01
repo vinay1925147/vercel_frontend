@@ -13,7 +13,7 @@ const adminSidebarMenuItems = [
     id: "dashboard",
     label: "Dashboard",
     path: "/admin/dashboard",
-    icon: <LayoutDashboard />,
+    icon: <LayoutDashboard />
   },
   {
     id: "products",
@@ -31,8 +31,7 @@ const adminSidebarMenuItems = [
 
 function MenuItems({ setOpen }) {
   const navigate = useNavigate();
-
-  return (
+   return (
     <nav className="mt-8 flex-col flex gap-2">
       {adminSidebarMenuItems.map((menuItem) => (
         <div
@@ -41,7 +40,7 @@ function MenuItems({ setOpen }) {
             navigate(menuItem.path);
             setOpen ? setOpen(false) : null;
           }}
-          className="flex cursor-pointer text-xl     items-center gap-2 rounded-md px-2 py-2 text-muted-foreground hover:bg-muted hover:text-foreground"
+          className="flex cursor-pointer text-xl items-center gap-2 rounded-md px-2 py-2 text-muted-foreground hover:bg-muted hover:text-foreground"
         >
           {menuItem.icon}
           <span>{menuItem.label}</span>
@@ -53,7 +52,6 @@ function MenuItems({ setOpen }) {
 
 function AdminSideBar({ open, setOpen }) {
   const navigate = useNavigate();
-
   return (
     <Fragment>
       {/* open side-bar  in small devices using click icon */}
@@ -70,7 +68,7 @@ function AdminSideBar({ open, setOpen }) {
           </div>
         </SheetContent>
       </Sheet>
-      <aside className="hidden w-64 flex-col border-r bg-background p-6 lg:flex">
+      <div className="hidden w-64 flex-col border-r bg-background p-6 lg:flex">
         <div
           onClick={() => navigate("/admin/dashboard")}
           className="flex cursor-pointer items-center gap-2"
@@ -79,7 +77,7 @@ function AdminSideBar({ open, setOpen }) {
           <h1 className="text-2xl font-extrabold">Admin Panel</h1>
         </div>
         <MenuItems />
-      </aside>
+      </div>
     </Fragment>
   );
 }

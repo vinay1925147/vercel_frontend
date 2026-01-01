@@ -1,10 +1,6 @@
 
 function Shoppingorder() {
-  return (
-    <div className="bg-amber-200">
-        <h1>vinay asati</h1>
-    </div>
-  )
-}
+  return <></>
+ }
 
-export default Shoppingorder;
+export  default Shoppingorder

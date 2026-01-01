@@ -5,13 +5,13 @@ import { Label } from "../ui/label";
 import {
   Select,
   SelectContent,
-  SelectValue,
   SelectItem,
   SelectTrigger,
+  SelectValue,
 } from "../ui/select";
 import { Textarea } from "../ui/textarea";
 function CommonForm({
-  formControls, //retrive array of input.js
+  formControls,
   formData,
   setFormData,
   onSubmit,
@@ -95,23 +95,34 @@ function CommonForm({
     }
     return element;
   };
-  //
+  
   return (
-    <form onSubmit={onSubmit}>
-      <div className="flex flex-col gap-3">
+    <form onSubmit={onSubmit} className="w-full">
+      <div className="flex flex-col gap-4">
         {formControls.map((controlItem) => (
-          <div className="grid w-full" key={controlItem.name}>
-            <Label className="mb-1">{controlItem.label}</Label>
-            {/* to render the auth props */}
+          <div className="flex flex-col gap-1.5" key={controlItem.name}>
+            <Label
+              htmlFor={controlItem.name}
+              className="text-sm font-medium text-gray-700"
+            >
+              {controlItem.label}
+            </Label>
             {renderInputsByComponent(controlItem)}
           </div>
         ))}
       </div>
+
       <Button
         disabled={isBtnDisabled}
         type="submit"
-        className="mt-5 w-full bg-blue-700 cursor-pointer hover:bg-blue-500"
-      >
+        className="
+      mt-6 w-full 
+      bg-blue-600 
+      text-white 
+      font-medium 
+      transition-colors 
+      hover:bg-blue-500 
+    ">
         {buttonText || "Submit"}
       </Button>
     </form>

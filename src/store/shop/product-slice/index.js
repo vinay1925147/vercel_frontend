@@ -15,7 +15,7 @@ export const getAllFilterProduct = createAsyncThunk(
       sortBy: sortParms,
     });
     const response = await axios.get(
-      `http://localhost:8000/api/shop/product/get?${query}`,
+      `${import.meta.env.VITE_API_URL}/api/shop/product/get?${query}`,
       { withCredentials: true }
     );
     //  console.log(response.data)
@@ -25,20 +25,24 @@ export const getAllFilterProduct = createAsyncThunk(
 );
 export const getProductDetails = createAsyncThunk(
   "shop/getproductdetails",
-  async ( id ) => {
+  async (id) => {
     const response = await axios.get(
-      `http://localhost:8000/api/shop/product/get/${id}`,
+      `${import.meta.env.VITE_API_URL}/api/shop/product/get/${id}`,
       { withCredentials: true }
     );
     // console.log(response.data);
-  
+
     return response.data;
   }
 );
 const shoppingProductSlice = createSlice({
-  name: "shoppingProducts",
+  name: "shopProduct",
   initialState,
-  reducers: {},
+  reducers: {
+    setProductDetails: (state) => {
+      state.productDetails = null;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(getAllFilterProduct.pending, (state) => {
@@ -46,7 +50,7 @@ const shoppingProductSlice = createSlice({
       })
       .addCase(getAllFilterProduct.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.productList = action.payload.data;
+        state.productList = action?.payload?.data;
       })
       .addCase(getAllFilterProduct.rejected, (state) => {
         state.isLoading = false;
@@ -57,7 +61,7 @@ const shoppingProductSlice = createSlice({
       })
       .addCase(getProductDetails.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.productDetails = action.payload.data;
+        state.productDetails = action?.payload?.data;
       })
       .addCase(getProductDetails.rejected, (state) => {
         state.isLoading = false;
@@ -65,5 +69,5 @@ const shoppingProductSlice = createSlice({
       });
   },
 });
-
+export const { setProductDetails } = shoppingProductSlice.actions;
 export default shoppingProductSlice.reducer;

@@ -27,6 +27,7 @@ function Login() {
       // console.log(responce);
     } catch (error) {
       console.log(error);
+      toast.error(" Error during login");
     }
   };
 
@@ -49,12 +50,12 @@ function Login() {
           <p>haven't account ?</p>
           <Link
             to="/auth/register"
-            className=" font-medium ml-2 text-primary hover:text-blue-600"
+            className="font-medium ml-2 text-primary hover:text-blue-600"
           >
             Register
           </Link>
         </div>
-      </div>''
+      </div>
     </div>
   );
 }

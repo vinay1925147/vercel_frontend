@@ -7,81 +7,158 @@ import { Button } from "../ui/button";
 function UseCartItemContent({ cartItem }) {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
-  const { productList } = useSelector((state) => state.shopCart);
-  const { cartItems } = useSelector((state) => state.auth);
+  const { productList } = useSelector((state) => state.shopProduct);
+//  const { cartItems } = useSelector((state) => state.shopCart);
+  console.log(productList);
+  console.log(cartItem);
   
- function handleUpdateQuantity(getCartItem, typeOfAction) {
-    if (typeOfAction == "plus") {
-      let getCartItems = cartItems.items || [];
 
-      if (getCartItems.length) {
-        const indexOfCurrentCartItem = getCartItems.findIndex(
-          (item) => item.productId === getCartItem?.productId
-        );
+// const  handleUpdateQuantity = (getCartItem, typeOfAction) => {
+   
+//     if (!getCartItem) return;
 
-        const getCurrentProductIndex = productList.findIndex(
-          (product) => product._id === getCartItem?.productId
-        );
-        const getTotalStock = productList[getCurrentProductIndex].totalStock;
+//     // Prevent decrementing below 1 to avoid removing the item unexpectedly
+//     if (typeOfAction === "minus") {
+//       if ((getCartItem?.quantity || 0) <= 1) {
+//         toast.info("Minimum quantity is 1");
+//         return;
+//       }
+//     }
 
-        console.log(getCurrentProductIndex, getTotalStock, "getTotalStock");
+//     // For increment, ensure we don't exceed available stock (if productList is available)
+//     if (typeOfAction === "plus") {
+//       try {
+//         const getCurrentProductIndex = productList?.findIndex(
+//           (product) => product._id === getCartItem?.productId
 
-        if (indexOfCurrentCartItem > -1) {
-          const getQuantity = getCartItems[indexOfCurrentCartItem].quantity;
-          if (getQuantity + 1 > getTotalStock) {
-            toast({
-              title: `Only ${getQuantity} quantity can be added for this item`,
-              variant: "destructive",
-            });
+//         );
+//         const getTotalStock =
+//           getCurrentProductIndex > -1
+//             ? productList[getCurrentProductIndex]?.totalStock
+//             : undefined;
 
-            return;
-          }
-        }
-      }
-    }
+//         const currentQuantity = getCartItem?.quantity || 0;
+//         if (
+//           typeof getTotalStock === "number" &&
+//           currentQuantity + 1 > getTotalStock
+//         ) {
+//           toast.success(`Only ${getTotalStock} quantity can be added for this item`);
+//           return;
+//         }
+//       } catch (err) {
+//         console.error(err);
+//       }
+//     }
 
-    dispatch(
-      updateCartQuantity({
-        userId: user?.id,
-        productId: getCartItem?.productId,
-        quantity:
-          typeOfAction === "plus"
-            ? getCartItem?.quantity + 1
-            : getCartItem?.quantity - 1,
-      })
-    ).then((data) => {
-      if (data?.payload?.success) {
-        toast({
-          title: "Cart item is updated successfully",
-        });
-      }
-    });
+//     const newQuantity =
+//       typeOfAction === "plus"
+//         ? (getCartItem?.quantity || 0) + 1
+//         : (getCartItem?.quantity || 0) - 1;
+
+//     // Ensure we never send a quantity less than 1
+//     if (newQuantity < 1) {
+//       toast.info("Minimum quantity is 1");
+//       return;
+//     }
+
+//     dispatch(
+//       updateCartQuantity({
+//         userId: user?.id,
+//         productId: getCartItem?.productId,
+//         quantity: newQuantity,
+//       })
+//     )
+//       .then((data) => {
+//         if (data?.payload?.success) {
+//           toast.success("Update successful");
+//         } else {
+//           toast.error("Failed to update cart item");
+//         }
+//       })
+//       .catch((err) => {
+//         toast.error("Update failed");
+//         console.error(err);
+//       });
+//   };
+
+
+const handleUpdateQuantity = (getCartItem, typeOfAction) => {
+  if (!getCartItem) return;
+
+  const currentQuantity = getCartItem.quantity ?? 0;
+
+  // Prevent decrement below 1
+  if (typeOfAction === "minus" && currentQuantity <= 1) {
+    toast.info("Minimum quantity is 1");
+    return;
   }
+
+  // Prevent increment beyond available stock
+  if (typeOfAction === "plus" && Array.isArray(productList)) {
+    const product = productList.find(
+      (item) => item._id === getCartItem.productId
+    );
+
+    const totalStock = product?.totalStock;
+
+    if (
+      typeof totalStock === "number" &&
+      currentQuantity + 1 > totalStock
+    ) {
+      toast.info(`Only ${totalStock} quantity can be added for this item`);
+      return;
+    }
+  }
+
+  const newQuantity =
+    typeOfAction === "plus"
+      ? currentQuantity + 1
+      : currentQuantity - 1;
+
+  dispatch(
+    updateCartQuantity({
+      userId: user?.id,
+      productId: getCartItem.productId,
+      quantity: newQuantity,
+    })
+  )
+    .then((data) => {
+      if (data?.payload?.success) {
+        toast.success("Cart updated successfully");
+      } else {
+        toast.error("Failed to update cart item");
+      }
+    })
+    .catch((err) => {
+      console.error(err);
+      toast.error("Update failed");
+    });
+};
 
   const handleCartItemDelete = (getCartItem) => {
     dispatch(
       deleteCartItem({ userId: user?.id, productId: getCartItem?.productId })
     ).then((data) => {
+      console.log(data);
       if (data?.payload?.success) {
-        toast({
-          title: "Cart item is deleted successfully",
-        });
+        toast.success("Cart item is deleted successfully");
       }
     });
   };
+
   return (
     <div className="flex items-center ">
       <img
         src={cartItem?.image}
         alt={cartItem?.title}
-        className=" w-20 h-20 rounded object-center "
+        className=" w-30 h-30 rounded object-center "
       />
-      <div className="flex-1">
-        <h3 className="font-extrabold">{cartItem?.title}</h3>
-        <div className="flex items-center gap-2 mt-1">
+      <div className="flex-1 ml-3">
+        <h3 className="font-extrabold ">{cartItem?.title}</h3>
+        <div className="flex items-center gap-2 mt-1 ">
           <Button
             variant="outline"
-            className="h-8 w-8 rounded-full"
+            className="h-8 w-8 rounded-full cursor-pointer hover:bg-gray-200"
             size="icon"
             onClick={() => handleUpdateQuantity(cartItem, "minus")}
           >
@@ -91,16 +168,16 @@ function UseCartItemContent({ cartItem }) {
           <span className="font-semibold">{cartItem?.quantity}</span>
           <Button
             variant="outline"
-            className="h-8 w-8 rounded-full"
+            className="h-8 w-8 rounded-full cursor-pointer hover:bg-gray-200"
             size="icon"
             onClick={() => handleUpdateQuantity(cartItem, "plus")}
           >
-            <Plus className="w-4 h-4" />
+            <Plus className="w-4 h-4 " />
             <span className="sr-only">Decrease</span>
           </Button>
         </div>
       </div>
-      <div className="flex flex-col items-end">
+      <div className="flex flex-row items-end">
         <p className="font-semibold">
           $
           {(
@@ -110,7 +187,7 @@ function UseCartItemContent({ cartItem }) {
         </p>
         <Trash
           onClick={() => handleCartItemDelete(cartItem)}
-          className="cursor-pointer mt-1"
+          className="cursor-pointer ml-3"
           size={20}
         />
       </div>

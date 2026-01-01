@@ -1,5 +1,5 @@
 import Productfilter from "@/components/shoppig-view/filter";
-// import ProductDetailsDialog from "@/components/shoppig-view/product-details";
+import ProductDetailsDialog from "@/components/shoppig-view/product-details";
 import ShoppingProductTile from "@/components/shoppig-view/product-tile";
 import { Button } from "@/components/ui/button";
 import {
@@ -40,7 +40,7 @@ function createSearchParamsHelper(filterParams) {
 function Shoppinglist() {
   const { productList, productDetails } = useSelector(
     (state) => state.shopProduct
-  );
+  ); 
   const { user } = useSelector((state) => state.auth);
   const {cartItems} = useSelector(state=> state.shopCart)
   const dispatch = useDispatch();
@@ -113,6 +113,11 @@ function Shoppinglist() {
     console.log(cartItems,"cartItems")
     
   };
+    useEffect(() => {
+    if (productDetails !== null) {
+      setOpenDetailsDialog(true);
+    }
+  }, [productDetails]);
   return (
     <>
       <div className="grid grid-cols-1 md:grid-cols-[200px_1fr] gap-6 p-4 md:p-6">
@@ -171,11 +176,11 @@ function Shoppinglist() {
           </div>
         </div>
 
-        {/* <ProductDetailsDialog
+        <ProductDetailsDialog
           open={openDetailsDialog}
           setOpen={setOpenDetailsDialog}
           productDetails={productDetails}
-        /> */}
+        />
       </div>
     </>
   );

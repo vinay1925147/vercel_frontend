@@ -9,6 +9,7 @@ function Adminlayout() {
  return (
   <>
     <div className="flex min-h-screen w-full">
+
       {/* Sidebar */}
       <Adminsidebar open={openSidebar} setOpen={setOpenSidebar} />
       <div className="flex flex-1 flex-col">
