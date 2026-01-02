@@ -10,7 +10,7 @@ export const addNewProduct = createAsyncThunk(
   "admin/product/add",
   async (formData) => {
     const response = await axios.post(
-      "${import.meta.env.VITE_API_URL}/api/admin/product/add",
+      `${import.meta.env.VITE_API_URL}/api/admin/product/add`,
       formData,
       { withCredentials: true }
     );
@@ -22,7 +22,7 @@ export const getAllProduct = createAsyncThunk(
   "admin/getAllproduct",
   async () => {
     const response = await axios.get(
-      "${import.meta.env.VITE_API_URL}/api/admin/product/get",
+      `${import.meta.env.VITE_API_URL}/api/admin/product/get`,
       { withCredentials: true }
     );
     return response.data;
@@ -66,7 +66,7 @@ const adminProductSlice = createSlice({
         state.isLoading = false;
         state.productList = action.payload?.products;
       })
-      .addCase(getAllProduct.rejected, (state, action) => {
+      .addCase(getAllProduct.rejected, (state) => {
         state.isLoading = false;
         state.productList = [];
       });
